@@ -3,42 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>一个小问题</title>
+    <title>一个小问题 ✨</title>
     <style>
+        /* --- 页面基础样式 --- */
         body {
             margin: 0;
             padding: 0;
+            background: linear-gradient(180deg, #fdfbfb 0%, #ebedee 100%);
+            background-image: linear-gradient(to top, #fad0c4 0%, #ffd1ff 100%);
             height: 100vh;
+            overflow: hidden;
+            font-family: "Comic Sans MS", "Microsoft YaHei", cursive, sans-serif;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            background-color: #fce4ec; /* 浅粉色背景 */
-            font-family: "Microsoft YaHei", sans-serif;
-            overflow: hidden; /* 防止按钮跑到屏幕外产生滚动条 */
+            justify-content: center;
+            user-select: none;
+        }
+
+        /* --- 卡片容器 --- */
+        .card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             text-align: center;
+            max-width: 90%;
+            width: 350px;
+            border: 2px solid #fff;
+            transition: all 0.5s ease;
         }
 
-        /* --- 容器样式 --- */
-        .container {
-            z-index: 1;
-            position: relative;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        /* --- 图片样式 --- */
-        .gif-img {
-            width: 200px;
+        /* --- 顶部动图 --- */
+        .gif-area img {
+            width: 180px;
             height: auto;
-            margin-bottom: 20px;
             border-radius: 15px;
+            margin-bottom: 20px;
         }
 
-        h1 {
-            color: #d81b60;
-            font-size: 2rem;
+        /* --- 标题文字 --- */
+        h2 {
+            color: #ff6b81;
             margin-bottom: 30px;
+            font-size: 1.5rem;
         }
 
         /* --- 按钮区域 --- */
@@ -47,194 +56,186 @@
             justify-content: center;
             align-items: center;
             gap: 20px;
-            position: relative;
-            min-height: 60px; /* 给按钮留位置 */
+            flex-wrap: wrap;
+            min-height: 60px; /* 防止按钮变大时布局跳动 */
         }
 
         button {
-            padding: 10px 30px;
-            font-size: 1.2rem;
+            padding: 12px 25px;
             border-radius: 50px;
             border: none;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             white-space: nowrap;
+            font-family: inherit;
         }
 
-        /* “是的”按钮 */
-        #yesBtn {
-            background-color: #ff4081;
+        /* 同意按钮 */
+        .btn-yes {
+            background-color: #ff6b81;
             color: white;
-            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.3);
-            z-index: 10; /* 保证永远在最上层 */
-        }
-
-        /* “不喜欢”按钮 */
-        #noBtn {
-            background-color: #e0e0e0;
-            color: #555;
-            position: relative; /* 改成absolute由JS控制 */
-        }
-
-        /* --- 成功页面 --- */
-        #successPage {
-            display: none; /* 默认隐藏 */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #fce4ec;
-            z-index: 99;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .success-text {
-            font-size: 2rem;
-            color: #d81b60;
+            box-shadow: 0 4px 15px rgba(255, 107, 129, 0.4);
             font-weight: bold;
+            transform-origin: center; /* 从中心放大 */
+        }
+
+        /* 拒绝按钮 */
+        .btn-no {
+            background-color: #a4b0be;
+            color: white;
+            box-shadow: 0 4px 10px rgba(164, 176, 190, 0.3);
+            position: relative; /* 方便后续绝对定位处理 */
+        }
+
+        /* --- 成功后的隐藏页面 --- */
+        .success-container {
+            display: none; /* 默认隐藏 */
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.8s ease;
+        }
+        .success-container h1 {
+            color: #ff4757;
+            font-size: 2rem;
             margin-top: 20px;
+        }
+        .success-msg {
+            color: #57606f;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 装饰性飘落元素 --- */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            animation: fall linear forwards;
+            z-index: 999;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
 
     </style>
 </head>
 <body>
 
-    <!-- 提问页面 -->
-    <div class="container" id="questionPage">
-        <!-- 这里放一张可爱的动图，比如乖巧的猫咪 -->
-        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2Q0ZGIzN2I1NzgwY2Q5YmFkMWQ2YmI4OWU2NDY1YjA1ZDI5MGQ3ZCZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PXM/3o7TKoWXm3hgO1nXIA/giphy.gif" alt="cute cat" class="gif-img" id="mainImg">
-        
-        <h1 id="questionText">你喜欢我吗？</h1>
-        
+    <!-- 提问卡片 -->
+    <div class="card" id="questionCard">
+        <div class="gif-area">
+            <!-- 这里是提问时的表情包，可替换 -->
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2Q0M3Yzajc5bWx4aG5tOXBzOXB4ZmI4Z3J4cHJ4b3Q5YzZ4czY3ZiZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Cute Bear">
+        </div>
+        <h2>你喜欢我吗？💕</h2>
         <div class="btn-group">
-            <button id="yesBtn">是的~</button>
-            <button id="noBtn">才不喜欢！</button>
+            <button class="btn-yes" id="yesBtn" onclick="agree()">是的~</button>
+            <button class="btn-no" id="noBtn" onclick="refuse()">才不喜欢！</button>
         </div>
     </div>
 
-    <!-- 成功后的页面 -->
-    <div id="successPage">
-        <!-- 成功后的动图，比如亲亲或开心跳舞 -->
-        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzMzZGI5Zjg2ZDU2ZWIwYWM3MDc0ZGIwNTc5NzEzODk4OWQ2ZDM1ZSZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PXM/l4pTfx2qLSzbWEdMF7/giphy.gif" alt="happy cat" class="gif-img">
-        <div class="success-text">我就知道你最喜欢我啦~ ❤️</div>
+    <!-- 成功后的卡片 -->
+    <div class="success-container" id="successCard">
+        <div class="gif-area">
+            <!-- 这里是成功后的表情包，可替换 -->
+            <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="Happy Cat" style="width: 220px;">
+        </div>
+        <h1>耶！我就知道！🥰</h1>
+        <div class="success-msg">
+            仙剑奇霞最喜欢仙剑奇侠了！<br>
+            我们要一直在一起哦~ ❤️
+        </div>
     </div>
 
     <script>
-        const yesBtn = document.getElementById("yesBtn");
-        const noBtn = document.getElementById("noBtn");
-        const questionText = document.getElementById("questionText");
-        const mainImg = document.getElementById("mainImg");
-        const questionPage = document.getElementById("questionPage");
-        const successPage = document.getElementById("successPage");
-
-        // 记录“拒绝”的次数
-        let clickCount = 0;
-        // 记录“是的”按钮当前的缩放倍数
-        let currentScale = 1;
-
-        // 拒绝按钮的文案数组（每次点击都会换一句话，增加趣味性）
-        const noTexts = [
-            "才不喜欢！",
-            "真的吗？",
-            "再想想？",
-            "不许选这个！",
-            "我会伤心的...",
-            "点另一个嘛！",
-            "你没得选了！"
+        let yesSize = 1; // 是的按钮初始大小
+        let noClickCount = 0; // 记录拒绝次数
+        
+        // 拒绝文案数组，越拒绝越可怜
+        const refuseTexts = [
+            "才不喜欢！", 
+            "再想想？", 
+            "真的不要吗？", 
+            "我会伤心的...", 
+            "最后一次机会！", 
+            "哼，不理你了！"
         ];
 
-        // --- “才不喜欢”按钮被点击的逻辑 ---
-        noBtn.addEventListener("click", function() {
-            clickCount++;
+        function refuse() {
+            const yesBtn = document.getElementById("yesBtn");
+            const noBtn = document.getElementById("noBtn");
+
+            noClickCount++;
+
+            // 1. 放大“是的”按钮
+            yesSize += 0.4; 
+            yesBtn.style.transform = `scale(${yesSize})`;
+
+            // 2. 缩小“才不喜欢”按钮，并改变文字
+            // 移动端适配：如果太小了就直接移除
+            const currentRefuseText = refuseTexts[Math.min(noClickCount, refuseTexts.length - 1)];
+            noBtn.innerText = currentRefuseText;
             
-            // 1. 让“是的”按钮变大
-            currentScale += 0.2; // 每次变大0.2倍
-            yesBtn.style.transform = `scale(${currentScale})`;
-            
-            // 2. 移动“不喜欢”按钮到随机位置
-            moveNoButton();
-
-            // 3. 改变“不喜欢”按钮的文字
-            // 如果次数超过数组长度，就一直显示最后一个
-            const textIndex = Math.min(clickCount, noTexts.length - 1);
-            noBtn.innerText = noTexts[textIndex];
-
-            // 4. 甚至可以换图片（可选）
-            // mainImg.src = "另一张哭哭的图片地址"; 
-        });
-
-        // --- 也可以增加鼠标移入就逃跑（电脑端更难点到）---
-        noBtn.addEventListener("mouseover", function() {
-            // 只有在电脑端鼠标悬停时才稍微移动一下，增加难度
-             if(window.innerWidth > 768) {
-                 moveNoButton();
-             }
-        });
-
-        // 随机移动按钮的函数
-        function moveNoButton() {
-            // 获取可视窗口的宽高
-            const maxWidth = window.innerWidth - 100; // 减去按钮大概宽度
-            const maxHeight = window.innerHeight - 50; // 减去按钮大概高度
-
-            // 生成随机坐标
-            const randomX = Math.random() * maxWidth;
-            const randomY = Math.random() * maxHeight;
-
-            // 设置为绝对定位
-            noBtn.style.position = "fixed"; // 使用fixed防止受父容器限制
-            noBtn.style.left = randomX + "px";
-            noBtn.style.top = randomY + "px";
-        }
-
-        // --- “是的”按钮点击逻辑 ---
-        yesBtn.addEventListener("click", function() {
-            // 1. 隐藏提问页
-            questionPage.style.display = "none";
-            // 2. 显示成功页
-            successPage.style.display = "flex";
-            
-            // 3. 触发烟花特效
-            fireworks();
-        });
-
-        // --- 简单的烟花效果（撒花） ---
-        function fireworks() {
-            const colors = ['#ff4081', '#ffeb3b', '#2196f3', '#4caf50', '#9c27b0'];
-            
-            // 生成50个彩纸屑
-            for(let i=0; i<50; i++) {
-                const confetti = document.createElement('div');
-                confetti.style.position = 'fixed';
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.top = -10 + 'px';
-                confetti.style.width = '10px';
-                confetti.style.height = '10px';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.zIndex = '999';
-                
-                // 随机动画
-                const duration = Math.random() * 3 + 2;
-                confetti.style.transition = `top ${duration}s linear, transform ${duration}s ease-in-out`;
-                
-                document.body.appendChild(confetti);
-
-                // 触发动画
-                setTimeout(() => {
-                    confetti.style.top = '110vh'; // 飘到底部
-                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-                }, 100);
-
-                // 动画结束后移除
-                setTimeout(() => {
-                    confetti.remove();
-                }, duration * 1000);
+            // 每次点击缩小一点透明度或大小
+            // 这里我们用一个trick：让它在视觉上越来越弱，最后消失
+            if(noClickCount >= 5) {
+                noBtn.style.display = 'none'; // 彻底消失，让你没得选
+            } else {
+                // 稍微移动一下位置，让它看起来在躲避（可选，这里只做变小）
+                // 缩小字体
+                let currentFontSize = window.getComputedStyle(noBtn, null).getPropertyValue('font-size');
+                let newSize = parseFloat(currentFontSize) - 2;
+                noBtn.style.fontSize = newSize + 'px';
+                // 稍微变透明
+                noBtn.style.opacity = (1 - noClickCount * 0.15);
             }
         }
 
+        function agree() {
+            // 隐藏提问卡片
+            document.getElementById("questionCard").style.display = "none";
+            // 显示成功卡片
+            const successCard = document.getElementById("successCard");
+            successCard.style.display = "flex";
+            
+            // 撒花特效
+            createConfetti();
+        }
+
+        // --- 撒花/爱心雨特效 ---
+        function createConfetti() {
+            const colors = ['#ff9a9e', '#fad0c4', '#ffecd2', '#e0c3fc', '#8ec5fc'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                // 随机位置、颜色、形状
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = Math.random() * 2 + 3 + 's';
+                confetti.style.opacity = Math.random();
+                
+                // 有些是圆的，有些是方的
+                if(Math.random() > 0.5) {
+                    confetti.style.borderRadius = '50%';
+                }
+                
+                document.body.appendChild(confetti);
+
+                // 动画结束后清理
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
     </script>
 </body>
 </html>
